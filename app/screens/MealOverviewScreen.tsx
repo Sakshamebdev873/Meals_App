@@ -1,10 +1,20 @@
+import { useRouter } from "expo-router";
 import { FlatList, StyleSheet, View } from "react-native";
 import MealItem from "../components/MealItem";
 
 function MealOverviewScreen({ selectedCategory, displayedMeals }: any) {
   // console.log(selectedCategory, displayedMeals);
+  const router = useRouter();
   function renderMealItem(dataItem: any) {
-    return <MealItem title={dataItem.item.title} />;
+    function pressHandler() {
+      router.push({
+        pathname: "/MealDetailScreen",
+        params: {
+          mealId: dataItem.item.id,
+        },
+      });
+    }
+    return <MealItem {...dataItem.item} onPress={pressHandler} />;
   }
   return (
     <>

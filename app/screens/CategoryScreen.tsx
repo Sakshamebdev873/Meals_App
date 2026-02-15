@@ -12,6 +12,7 @@ function CategoryScreen() {
         pathname: "/MealOverview",
         params: {
           categoryId: itemData.item.id,
+          title: itemData.item.title,
         },
       });
     }
