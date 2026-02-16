@@ -1,17 +1,30 @@
 import { MEALS } from "@/assets/Data/dummy-data";
-import { Stack } from "expo-router";
+import { useNavigation } from "expo-router";
 import { useLocalSearchParams } from "expo-router/build/hooks";
+import { useLayoutEffect } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import IconButton from "./components/IconButton";
 import List from "./components/MealDetail/List";
 import Subtitle from "./components/MealDetail/Subtitle";
 import MealDetails from "./components/MealDetails";
 const MealDetail = () => {
   const { mealId } = useLocalSearchParams<{ mealId: string }>();
   const selectedMeal = MEALS.find((item) => item.id == mealId);
-  if (!selectedMeal) {
-    return null; // or <Text>Meal not found</Text>
+  const navigation = useNavigation();
+  function pressHandler() {
+    console.log("I am pressed");
   }
+  // useLayoutEffect runs synchronously after React calculates the layout but BEFORE the screen is painted.
+  useLayoutEffect(() => {
+    if (!selectedMeal) return;
 
+    navigation.setOptions({
+      title: selectedMeal.title,
+      headerRight: () => (
+        <IconButton onPress={pressHandler} icon="star" color="white" />
+      ),
+    });
+  }, [selectedMeal]);
   const {
     duration,
     affordability,
@@ -20,15 +33,10 @@ const MealDetail = () => {
     title,
     ingredients,
     steps,
-  } = selectedMeal;
+  }: any = selectedMeal;
+
   return (
     <>
-      <Stack.Screen
-        options={{
-          title: title,
-        }}
-      />
-
       <ScrollView style={styles.container}>
         <Image source={{ uri: imageUrl }} style={styles.image} />
         <Text style={styles.title}>{title}</Text>

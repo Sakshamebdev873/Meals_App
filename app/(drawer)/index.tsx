@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import CategoryScreen from "./screens/CategoryScreen";
+import CategoryScreen from "../screens/CategoryScreen";
 
 export default function Index() {
   return (
