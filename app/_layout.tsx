@@ -1,9 +1,10 @@
 import { Stack } from "expo-router";
 import "react-native-gesture-handler";
-import FavoritesContextProvider from "./store/context/favorites-context";
+import { Provider } from "react-redux";
+import { store } from "./store/redux/store";
 export default function RootLayout() {
   return (
-    <FavoritesContextProvider>
+    <Provider store={store}>
       <Stack
         screenOptions={{
           headerStyle: { backgroundColor: "#351401" },
@@ -24,6 +25,6 @@ export default function RootLayout() {
           }}
         />
       </Stack>
-    </FavoritesContextProvider>
+    </Provider>
   );
 }

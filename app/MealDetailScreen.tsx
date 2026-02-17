@@ -1,24 +1,30 @@
 import { MEALS } from "@/assets/Data/dummy-data";
 import { useNavigation } from "expo-router";
 import { useLocalSearchParams } from "expo-router/build/hooks";
-import { useContext, useLayoutEffect } from "react";
+import { useLayoutEffect } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import IconButton from "./components/IconButton";
 import List from "./components/MealDetail/List";
 import Subtitle from "./components/MealDetail/Subtitle";
 import MealDetails from "./components/MealDetails";
-import { FavoritesContext } from "./store/context/favorites-context";
+import { addFavorites, removeFavorites } from "./store/redux/favorites";
 const MealDetail = () => {
   const { mealId } = useLocalSearchParams<{ mealId: string }>();
   const selectedMeal = MEALS.find((item) => item.id == mealId);
   const navigation = useNavigation();
-  const favoritesMealsCtx = useContext(FavoritesContext);
-  const mealIsFavorites = favoritesMealsCtx.ids.includes(mealId);
+  // const favoritesMealsCtx = useContext(FavoritesContext);
+  const favoriteMealIds =
+    useSelector((state: any) => state.favoriteMeals.ids) || [];
+  const dispatch = useDispatch();
+  const mealIsFavorites = favoriteMealIds.includes(mealId);
   function pressHandler() {
     if (mealIsFavorites) {
-      favoritesMealsCtx.removeFavorites(mealId);
+      // favoriteMealIds.removeFavorites(mealId);
+      dispatch(removeFavorites({ id: mealId }));
     } else {
-      favoritesMealsCtx.addFavorites(mealId);
+      // favoriteMealIds.addFavorites(mealId);
+      dispatch(addFavorites({ id: mealId }));
     }
   }
   // useLayoutEffect runs synchronously after React calculates the layout but BEFORE the screen is painted.
