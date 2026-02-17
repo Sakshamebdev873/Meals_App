@@ -1,18 +1,25 @@
 import { MEALS } from "@/assets/Data/dummy-data";
 import { useNavigation } from "expo-router";
 import { useLocalSearchParams } from "expo-router/build/hooks";
-import { useLayoutEffect } from "react";
+import { useContext, useLayoutEffect } from "react";
 import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
 import IconButton from "./components/IconButton";
 import List from "./components/MealDetail/List";
 import Subtitle from "./components/MealDetail/Subtitle";
 import MealDetails from "./components/MealDetails";
+import { FavoritesContext } from "./store/context/favorites-context";
 const MealDetail = () => {
   const { mealId } = useLocalSearchParams<{ mealId: string }>();
   const selectedMeal = MEALS.find((item) => item.id == mealId);
   const navigation = useNavigation();
+  const favoritesMealsCtx = useContext(FavoritesContext);
+  const mealIsFavorites = favoritesMealsCtx.ids.includes(mealId);
   function pressHandler() {
-    console.log("I am pressed");
+    if (mealIsFavorites) {
+      favoritesMealsCtx.removeFavorites(mealId);
+    } else {
+      favoritesMealsCtx.addFavorites(mealId);
+    }
   }
   // useLayoutEffect runs synchronously after React calculates the layout but BEFORE the screen is painted.
   useLayoutEffect(() => {
@@ -21,10 +28,14 @@ const MealDetail = () => {
     navigation.setOptions({
       title: selectedMeal.title,
       headerRight: () => (
-        <IconButton onPress={pressHandler} icon="star" color="white" />
+        <IconButton
+          onPress={pressHandler}
+          icon={mealIsFavorites ? "star" : "star-outline"}
+          color="white"
+        />
       ),
     });
-  }, [selectedMeal]);
+  }, [selectedMeal, pressHandler]);
   const {
     duration,
     affordability,
